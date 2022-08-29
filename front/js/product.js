@@ -60,9 +60,9 @@ addToCart.addEventListener('click', function () {
 			color: colorsElement.value,
 		}
 		changeCartArray(canapAddToCart)
-		//conversion en string et envoie dans le local storage
-		//console.log(canapAddToCart)
-		//console.log(cartArray)
+		
+		console.log(canapAddToCart)
+		console.log(cartArray)
 	}
 })
 
@@ -71,7 +71,7 @@ function changeCartArray(canapAddToCart) {
 	// panier vide
 	if (cartArray.length === 0) {
 		cartArray.push(canapAddToCart)
-		alert('produit ajouté')
+		alert('produit ajouté au panier')
 	} else {
 		for (let i = 0; i < cartArray.length; i++) {
 			const canap = cartArray[i]
@@ -87,7 +87,7 @@ function changeCartArray(canapAddToCart) {
 		// rajouter au panier
 		if (ajouter) {
 			cartArray.push(canapAddToCart)
-			alert('produit ajouté')
+			alert('produit ajouté au panier')
 		}
 	}
 
