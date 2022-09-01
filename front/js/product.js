@@ -57,7 +57,7 @@ addToCart.addEventListener('click', function () {
 		let canapAddToCart = {
 			canapeId: id,
 			quantity: quantityElement.value,
-			color: colorsElement.value,
+			color: colorsElement.value
 		}
 		changeCartArray(canapAddToCart)
 		
