@@ -14,66 +14,71 @@ let priceArray = []
 const url = 'http://localhost:3000/api/products'
 const panierContent = document.getElementById('cart__items')
 
-fetch(url).then((res) => {
-    res
-        .json()
-        .then((cartProduct) => {
-            // console.log(cartProduct)
+fetchData()
 
-            for (let i = 0; i < cartArray.length; i++) {
-                let idProductCart = cartArray[i].canapeId
-                let colorProductCart = cartArray[i].color
-                let quantityProductCart = cartArray[i].quantity
+function fetchData() {
+    fetch(url).then((res) => {
+        res
+            .json()
+            .then((cartProduct) => {
+                // console.log(cartProduct)
 
-                //recuperation des infos des canapés dans l'api dont l'id correspond a celui du panier
-                const recupProductCart = cartProduct.find(
-                    (element) => element._id === idProductCart
-                )
-                let nameProductCart = recupProductCart.name
-                let priceProductCart = recupProductCart.price
-                let imgProductCart = recupProductCart.imageUrl
-                let altImgProductCart = recupProductCart.altTxt
+                for (let i = 0; i < cartArray.length; i++) {
+                    let idProductCart = cartArray[i].canapeId
+                    let colorProductCart = cartArray[i].color
+                    let quantityProductCart = cartArray[i].quantity
 
-                panierContent.innerHTML += `
-                <article class="cart__item" data-id="${idProductCart}" data-color="${colorProductCart}">
-                    <div class="cart__item__img">
-                        <img src="${imgProductCart}" alt="${altImgProductCart}">
-                    </div>
-                    <div class="cart__item__content">
-                        <div class="cart__item__content__description">
-                            <h2>${nameProductCart}</h2>
-                            <p>${colorProductCart}</p>
-                            <p>${priceProductCart} €</p>
+                    //recuperation des infos des canapés dans l'api dont l'id correspond a celui du panier
+                    const recupProductCart = cartProduct.find(
+                        (element) => element._id === idProductCart
+                    )
+                    let nameProductCart = recupProductCart.name
+                    let priceProductCart = recupProductCart.price
+                    let imgProductCart = recupProductCart.imageUrl
+                    let altImgProductCart = recupProductCart.altTxt
+
+                    panierContent.innerHTML += `
+                    <article class="cart__item" data-id="${idProductCart}" data-color="${colorProductCart}">
+                        <div class="cart__item__img">
+                            <img src="${imgProductCart}" alt="${altImgProductCart}">
                         </div>
-                        <div class="cart__item__content__settings">
-                            <div class="cart__item__content__settings__quantity">
-                                <p>Qté : </p>
-                                <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${quantityProductCart}">
+                        <div class="cart__item__content">
+                            <div class="cart__item__content__description">
+                                <h2>${nameProductCart}</h2>
+                                <p>${colorProductCart}</p>
+                                <p>${priceProductCart} €</p>
                             </div>
-                            <div class="cart__item__content__settings__delete">
-                                <p class="deleteItem">Supprimer</p>
+                            <div class="cart__item__content__settings">
+                                <div class="cart__item__content__settings__quantity">
+                                    <p>Qté : </p>
+                                    <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${quantityProductCart}">
+                                </div>
+                                <div class="cart__item__content__settings__delete">
+                                    <p class="deleteItem">Supprimer</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </article>
-                `
-                //mie dans un tableau des variables contenant la quantité et le prix des produit
-                priceArray.push({
-                    priceProductCart,
-                    quantityProductCart,
-                })
-            }
-        })
-        .then(() => {
-            totalPriceQuantityCart()
-        })
-        .then(() => {
-            //changeQuantityCart()
-            //deleteProductCart()
-            
-        })
-    //console.log(priceArray)
-})
+                    </article>
+                    `
+                    //mise dans un tableau des variables contenant la quantité et le prix des produit
+                    priceArray.push({
+                        priceProductCart,
+                        quantityProductCart,
+                    })
+                }
+            })
+            .then(() => {
+                totalPriceQuantityCart()
+                changeQuantityCart()
+                deleteProductCart()
+                
+                
+            })
+            .then(() => {
+                OrderFinal()
+            })
+    })
+}
 
 
 //fonction pour le calcul du nombre de produit dans le panier ainsi que le prix total
@@ -107,18 +112,6 @@ function totalPriceQuantityCart() {
 }
     
 
-/*
-let productCartPage = {
-    id : idProductCart,
-    name : nameProductCart,
-    price : priceProductCart,
-    color : colorProductCart,
-    quantity : quantityProductCart,
-    image :imgProductCart,
-    alt : altImgProductCart
-} 
-*/
-
 //fonction pour supprimer un article du panier et du local storage
 
 function deleteProductCart() {
@@ -131,21 +124,25 @@ function deleteProductCart() {
 
             //on pointe vers le parent <article> dans lequel il y a les data-id et data-color
             const articleCart = boutonSupprimer.closest('article')
-            const articleID = e.target.getAttribute("data-id")
-            //const articleColor = e.target.getAttribute("data-color")
+            const articleID = articleCart.getAttribute("data-id")
+            const articleColor = articleCart.getAttribute("data-color")
             
             //Filtrage des elements du local storage pour ne garder que les articles différents en id et
             //couleur de celui supprimer
 
-            cartArray = cartArray.filter(el => el.idProductCart !== articleID || el.colorProductCart !== articleColor);
+            cartArray = cartArray.filter(el => el.canapeId !== articleID || el.color !== articleColor);
             //Mise à jour du localstorage
             
             localStorage.setItem("canap", JSON.stringify(cartArray));
-            alert('Le produit à été supprimé du panier')
-
+            
             if (articleCart.parentNode) {articleCart.parentNode.removeChild(articleCart)}
-
-            if (cartArray.length === 0) {alert('Le panier est vide')}
+            alert('Le produit à été supprimé du panier')
+            
+            
+            if (cartArray.length === 0) {
+                window.location.reload()
+                document.querySelector('.cartAndFormContainer').innerHTML = `<h1>Votre panier est vide</h1>`
+            }
             else {
                 totalPriceQuantityCart()
             }
@@ -157,112 +154,200 @@ function deleteProductCart() {
 //Fonction pour modifier la quantité d'un produit dans le panier
 
 function changeQuantityCart() {
+    //on pointe vers la case de changement de quantité
     let changeQuantity = document.querySelectorAll('.itemQuantity');
     
     for (let i = 0; i < changeQuantity.length; i++) {
         const input = changeQuantity[i];
 
+        //on écoute la modification de la case
         input.addEventListener('change', (e) => {
             e.preventDefault();
-
-            let cartQuantity = parseInt(cartArray[i].quantity)
-            let inputQuantity = parseInt(input[i])
-            let modif = cartArray.find( el => el.inputQuantity != cartQuantity)
-            cartArray[i].quantity = inputQuantity;
+            //la valeur de la case est transmise a la quantité dans le tableau contenant les produits
+            cartArray[i].quantity = Number(e.target.value)
+            //puis enregistrée aussi dans le localStorage
             localStorage.setItem('canap', JSON.stringify(cartArray))
+            //les quantités et les prix sont mis à jour
+            priceArray = []
+            panierContent.innerHTML = ''
+            fetchData()
 
         })
-        if (cartArray[i].quantity == null) {deleteProductCart()}
-    }
-    totalPriceQuantityCart()
+
+    }  
+
 }
 
 
-//Formulaire
-addEventListener('change', () => {
-    function formFirstName() {
-        let inputFirstName = document.getElementById('firstName').value;
-        let textValidation = document.getElementById('firstNameErrorMsg');
-        let regexText = new RegExp('^[a-zA-Z0-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ._\s-]$', 'g');
+//Fonction regroupant l'écoute des champs du formulaire, leur verification et l'utilisation des données pour créer
+//objet au clic du bouton commander
 
-        if (inputFirstName.match(regexText)) {
-            textValidation.innerHTML = 'Prénom validé.';
-            textValidation.style.color = '#44ff4a';
+function OrderFinal() {
+    
+    //Formulaire, ecoute et validation de chaque champs
 
-        } else {
-            textValidation.innerHTML = 'Veuillez entrer un prénom.';
-            textValidation.style.color = '#000000';
-        }
+    //function formFirstName() {
+        const inputFirstName = document.getElementById('firstName');
+    
+        inputFirstName.addEventListener('change', () => {
+            let textValidation = document.getElementById('firstNameErrorMsg');
+            let regexText = new RegExp("^[^.?!:;,/\\/_-]([. '-]?[a-zA-Zàâäéèêëïîôöùûüç])+[^.?!:;,/\\/_-]$", 'g');
+    
+            if (inputFirstName.value.match(regexText)) {
+                textValidation.innerHTML = 'Prénom validé.';
+                textValidation.style.color = '#44ff4a';
+    
+            } else {
+                textValidation.innerHTML = 'Veuillez entrer un prénom.';
+                textValidation.style.color = '#000000';
+            }
+        })    
+    //}
+    
+    //function formLastName() {
+        const inputLastName = document.getElementById('lastName');
+    
+        inputLastName.addEventListener('change', () => {
+    
+            let textValidation = document.getElementById('lastNameErrorMsg');
+            let regexText = new RegExp("^[^.?!:;,/\\/_-]([. '-]?[a-zA-Zàâäéèêëïîôöùûüç])+[^.?!:;,/\\/_-]$", 'g');
+    
+            if (inputLastName.value.match(regexText)) {
+                textValidation.innerHTML = 'Nom validé.';
+                textValidation.style.color = '#44ff4a';
+                    
+            } else {
+                textValidation.innerHTML = 'Veuillez entrer un nom de famille.';
+                textValidation.style.color = '#000000';
+            }
+        })
+    //}
+    
+    //function formAddress() {
+        const inputAddress = document.getElementById('address');
+        inputAddress.addEventListener('change', () => {
+    
+            let textValidation = document.getElementById('addressErrorMsg');
+            let regexText = new RegExp("^[^.?!:;,/\\/_-]([, .:;'-]?[0-9a-zA-Zàâäéèêëïîôöùûüç])+[^.?!:;,/\\/_-]$");
+    
+            if (inputAddress.value.match(regexText)) {
+                textValidation.innerHTML = 'Adresse validée.';
+                textValidation.style.color = '#44ff4a';
+                
+            } else {
+                textValidation.innerHTML = 'Veuillez entrer une adresse valide.';
+                textValidation.style.color = '#000000';
+            }    
+        })
+    //}
+    
+    //function formCity() {
+        const inputCity = document.getElementById('city');
+        inputCity.addEventListener('change', () => {
+    
+            let textValidation = document.getElementById('cityErrorMsg');
+            let regexText = new RegExp("^[^.?!:;,/\\/_-]([. '-]?[a-zA-Zàâäéèêëïîôöùûüç])+[^.?!:;,/\\/_-]$", 'g');
+    
+            if (inputCity.value.match(regexText)) {
+                textValidation.innerHTML = 'Ville validée.';
+                textValidation.style.color = '#44ff4a';
+                
+            } else {
+                textValidation.innerHTML = 'Veuillez entrer une ville.';
+                textValidation.style.color = '#000000';
+            }      
+        })
+    //}
+    
+    //function formEmail() {
+        const inputEmail = document.getElementById('email');
+        inputEmail.addEventListener('change', () => {
+    
+            let textValidation = document.getElementById('emailErrorMsg');
+            let regexText = new RegExp("([!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)*|\"\(\[\]!#-[^-~ \t]|(\\[\t -~]))+\")@([!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)*|\[[\t -Z^-~]*])");
+    
+            if (inputEmail.value.match(regexText)) {
+                textValidation.innerHTML = 'Email validée.';
+                textValidation.style.color = '#44ff4a';
+                
+            } else {
+                textValidation.innerHTML = 'Veuillez entrer une adresse mail valide.';
+                textValidation.style.color = '#000000';
+            }    
+        })
+    //}
+
+    //formFirstName();
+    //formLastName();
+    //formAddress();
+    //formCity();
+    //formEmail();
+
+    //Ecoute du bouton commander et actions si oui ou non le formulaire est bien rempli
+    
+    const boutonCommaner = document.getElementById('order')
+    
+    boutonCommaner.addEventListener('click', (e) => {
+        e.preventDefault();
+        //si le panier est vide on affiche ce message
+        if (cartArray === null || cartArray.length === 0) {
+            alert('Votre panier est vide')}
         
-    }
+        else {
+            //si tous les champs ne sont pas remplis, on affiche ce message
+            if (!inputFirstName.value ||
+                !inputLastName.value ||
+                !inputAddress.value ||
+                !inputCity.value ||
+                !inputEmail.value) {
 
-    function formLastName() {
-        let inputLastName = document.getElementById('lastName').value;
-        let textValidation = document.getElementById('lastNameErrorMsg');
-        let regexText = new RegExp('^[a-zA-Z0-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ._\s-]$', 'g');
+                alert('Veuillez renseigner tous les champs du formulaire')
+            }
+            else {
+                //si tous les champs sont rempli on crée un objet contenant les infos client et produits du panier
+                let orderProduct = []
+                for (let i = 0; i < cartArray.length; i++) {
+                    orderProduct.push(cartArray[i]);
+                    //console.log(orderProduct)
+                }
 
-        if (inputLastName.match(regexText)) {
-            textValidation.innerHTML = 'Nom validé.';
-            textValidation.style.color = '#44ff4a';
-            
-        } else {
-            textValidation.innerHTML = 'Veuillez entrer un nom de famille.';
-            textValidation.style.color = '#000000';
+                    let orderData = {
+                        contact : {
+                            firstName : inputFirstName.value,
+                            lastName : inputLastName.value,
+                            address : inputAddress.value,
+                            city : inputCity.value,
+                            email : inputEmail.value
+                        },
+                        products : orderProduct
+                    }
+                    //console.log(orderData)
+
+                    //Métode d'envoi des données
+                    const orderPost = {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json', 
+                            'Content-Type': 'application/json' 
+                        },
+                        body: JSON.stringify(orderData)
+                    }
+                    //console.log(orderPost)
+
+                    //Envoi des données à l'API
+                    fetch(`http://localhost:3000/api/products/order`, orderPost)
+                    .then((res) => { 
+                        res.json()
+                        .then((data) => {
+                            console.log(data)
+
+                        })
+                        .catch((err) => {
+                            console.log('erreur fetch requête poste', err)
+                        })
+
+                    })
+            }
         }
-        
-    }
-
-    function formAdress() {
-        let inputAdress = document.getElementById('address').value;
-        let textValidation = document.getElementById('addressErrorMsg');
-        let regexText = new RegExp('^[A-Za-z\é\è\ê\ç\-]+$', 'g');
-
-        if (inputAdress.match(regexText)) {
-            textValidation.innerHTML = 'Adresse validée.';
-            textValidation.style.color = '#44ff4a';
-            
-        } else {
-            textValidation.innerHTML = 'Veuillez entrer une adresse valide.';
-            textValidation.style.color = '#000000';
-        }
-        
-    }
-
-    function formCity() {
-        let inputCity = document.getElementById('city').value;
-        let textValidation = document.getElementById('cityErrorMsg');
-        let regexText = new RegExp('^[a-zA-Z0-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ._\s-]$', 'g');
-
-        if (inputCity.match(regexText)) {
-            textValidation.innerHTML = 'Ville validée.';
-            textValidation.style.color = '#44ff4a';
-            
-        } else {
-            textValidation.innerHTML = 'Veuillez entrer une ville.';
-            textValidation.style.color = '#000000';
-        }
-        
-    }
-
-    function formEmail() {
-        let inputEmail = document.getElementById('email').value;
-        let textValidation = document.getElementById('emailErrorMsg');
-        let regexText = new RegExp('^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$', 'g');
-
-        if (inputEmail.match(regexText)) {
-            textValidation.innerHTML = 'Email validée.';
-            textValidation.style.color = '#44ff4a';
-            
-        } else {
-            textValidation.innerHTML = 'Veuillez entrer une adresse mail valide.';
-            textValidation.style.color = '#000000';
-        }
-        
-    }
-
-    formFirstName();
-    formLastName();
-    formAdress();
-    formCity();
-    formEmail();
-})
+    })
+}
