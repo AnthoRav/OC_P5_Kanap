@@ -307,7 +307,7 @@ function OrderFinal() {
                 //si tous les champs sont rempli on crée un objet contenant les infos client et produits du panier
                 let orderProduct = []
                 for (let i = 0; i < cartArray.length; i++) {
-                    orderProduct.push(cartArray[i]);
+                    orderProduct.push(cartArray[i].canapeId);
                     //console.log(orderProduct)
                 }
 
@@ -335,11 +335,12 @@ function OrderFinal() {
                     //console.log(orderPost)
 
                     //Envoi des données à l'API
-                    fetch(`http://localhost:3000/api/products/order`, orderPost)
+                    fetch('http://localhost:3000/api/products/order', orderPost)
                     .then((res) => { 
                         res.json()
                         .then((data) => {
                             console.log(data)
+                            document.location.href=`confirmation.html?orderId=${data.orderId}`
 
                         })
                         .catch((err) => {
