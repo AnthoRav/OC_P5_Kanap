@@ -12,7 +12,7 @@ const descriptionElement = document.getElementById('description')
 const colorsElement = document.getElementById('colors')
 const titlePage = document.querySelector("title");
 
-// inicialisée les variables
+// initialiser les variables
 let cartArray = []
 
 //Recuperer les données du produit depuis l'API
@@ -30,13 +30,14 @@ fetch(url).then((res) => {
 		.catch((err) => console.log(err))
 })
 
-//Pour afficher le choix de couleurs
+//Pour afficher le choix des couleurs
 function canapeColors(canape) {
 	for (let i = 0; i < canape.colors.length; i++) {
 		colorsElement.innerHTML += `<option value="${canape.colors[i]}">${canape.colors[i]}</option>`
 	}
 }
 
+//on pointe vers les elements sur lesquels nous allons intéragir
 let quantityElement = document.getElementById('quantity')
 const addToCart = document.getElementById('addToCart')
 
@@ -46,12 +47,18 @@ if (localStorage.getItem('canap')) {
 	//console.log(cartArray)
 }
 
-//Ajouter au panier avec condition de quantitée et de couleur
+//Ecoute du bouton ajouter au panier avec condition de quantitée et de couleur
 addToCart.addEventListener('click', function () {
+	//on affiche ce message si aucune couleur n'est selectionnée
 	if (colorsElement.value === '') alert('Veuillez choisir une couleur')
+
+	//on affiche ce message si aucune quantité n'est selectionnée
 	else if (quantityElement.value < 1) alert('Veuillez choisir une quantitée')
+
+	//on affiche ce message si la quantitée entrée est supérieure à 100
 	else if (quantityElement.value > 100)
 		alert('La quantitée ne peut pas dépasser 100')
+
 	else if (quantityElement.value > 0 && quantityElement.value < 101) {
 		//creation de l'objet à envoyer dans le panier
 		let canapAddToCart = {
@@ -61,18 +68,19 @@ addToCart.addEventListener('click', function () {
 		}
 		changeCartArray(canapAddToCart)
 		
-		console.log(canapAddToCart)
-		console.log(cartArray)
+		//console.log(canapAddToCart)
+		//console.log(cartArray)
 	}
 })
 
 function changeCartArray(canapAddToCart) {
 	let ajouter = true
-	// panier vide
+	// si le panier est vide on ajoute dedans le/les produits et on affiche ce message
 	if (cartArray.length === 0) {
 		cartArray.push(canapAddToCart)
 		alert('produit ajouté au panier')
 	} else {
+		//sinon on ajoute met a jour la quantitée d'un produit déjà présent dans le panier en remplaçant par la nouvelle valeur
 		for (let i = 0; i < cartArray.length; i++) {
 			const canap = cartArray[i]
 			if (
@@ -90,52 +98,7 @@ function changeCartArray(canapAddToCart) {
 			alert('produit ajouté au panier')
 		}
 	}
-
+	//le panier est enregistrer dans le local storage dans tous les cas
 	localStorage.setItem('canap', JSON.stringify(cartArray))
 }
 
-/*
-function saveCartArray(cartArray) {
-    localStorage.setItem("canap", JSON.stringify(cartArray));
-}
-
-function getCartArray () {
-    let cartArray = localStorage.getItem("canap");
-    if (cartArray == null) {
-        return [];
-    } else {
-        return JSON.parse(cartArray)
-    }
-}
-
-function addCartArray(canapAddToCart) {
-    let cartArray = getCartArray();
-    let foundCanap = cartArray.find(p => p.id == canapAddToCart.id);
-    if (foundCanap != undefined) {
-        foundCanap.quantity++;
-    } else {
-        canapAddToCart.quantity = 1;
-        cartArray.push(canapAddToCart);
-    }
-    saveCartArray(cartArray);
-}
-
-function removeFromCartArray(canapAddToCart) {
-    let cartArray = getCartArray();
-    cartArray = cartArray.filter(p => p.id != canapAddToCart.id);
-    saveCartArray(cartArray);
-}
-
-function ChangeQuantity(canapAddToCart,quantity) {
-    let cartArray = getCartArray();
-    let foundCanap = cartArray.find(p => p.id == canapAddToCart.id);
-    if (foundCanap != undefined) {
-        foundCanap.quantity += quantity;
-        if (foundCanap.quantity <= 0) {
-            removeFromCartArray(canapAddToCart);
-        } else {
-            saveCartArray(cartArray);
-        }
-    }
-}
-*/

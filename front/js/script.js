@@ -1,10 +1,13 @@
 const url = 'http://localhost:3000/api/products'
+
+//on pointe l'element dans lequel on veux afficher la réponse de la requête
 const divItems = document.getElementById('items')
 
 fetch(url).then((res) => {
     res.json().then((arrayKanape) => {
         // console.log(arrayKanape)
-        //divItems.innerHTML = arrayKanape
+
+        //Boucle pour afficher tous les elements du tableau reçu de l'API
         for (let index = 0; index < arrayKanape.length; index++) {
             const canape = arrayKanape[index]
             divItems.innerHTML += `

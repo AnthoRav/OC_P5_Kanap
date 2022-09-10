@@ -71,8 +71,7 @@ function fetchData() {
                 totalPriceQuantityCart()
                 changeQuantityCart()
                 deleteProductCart()
-                
-                
+                  
             })
             .then(() => {
                 OrderFinal()
@@ -115,9 +114,11 @@ function totalPriceQuantityCart() {
 //fonction pour supprimer un article du panier et du local storage
 
 function deleteProductCart() {
+
     //On pointe vers le bouton supprimer de l'html
     const boutonSupprimer = document.querySelectorAll('.deleteItem')
     boutonSupprimer.forEach((boutonSupprimer) => {
+
         //ecoute du click sur le bouton supprimer et reaction
         boutonSupprimer.addEventListener('click', (e) => {
             e.preventDefault();
@@ -131,18 +132,20 @@ function deleteProductCart() {
             //couleur de celui supprimer
 
             cartArray = cartArray.filter(el => el.canapeId !== articleID || el.color !== articleColor);
-            //Mise à jour du localstorage
             
+            //Mise à jour du localstorage
             localStorage.setItem("canap", JSON.stringify(cartArray));
             
+            //on supprime visuellement le produit de la page panier 
             if (articleCart.parentNode) {articleCart.parentNode.removeChild(articleCart)}
             alert('Le produit à été supprimé du panier')
             
-            
+            //si le panier est vide après la suppression de produit, la page se recharge pour se mettre à jour avec ce message
             if (cartArray.length === 0) {
                 window.location.reload()
                 document.querySelector('.cartAndFormContainer').innerHTML = `<h1>Votre panier est vide</h1>`
             }
+            //sinon la quantitée de produit et le prix total est recalculé
             else {
                 totalPriceQuantityCart()
             }
