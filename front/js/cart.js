@@ -137,14 +137,21 @@ function deleteProductCart() {
             localStorage.setItem("canap", JSON.stringify(cartArray));
             
             //on supprime visuellement le produit de la page panier 
-            if (articleCart.parentNode) {articleCart.parentNode.removeChild(articleCart)}
-            alert('Le produit à été supprimé du panier')
+            if (articleCart.parentNode) {
+                articleCart.parentNode.removeChild(articleCart)
+                alert('Le produit à été supprimé du panier')
+            }
             
             //si le panier est vide après la suppression de produit, la page se recharge pour se mettre à jour avec ce message
-            if (cartArray.length === 0) {
-                window.location.reload()
-                document.querySelector('.cartAndFormContainer').innerHTML = `<h1>Votre panier est vide</h1>`
+            if (cartArray.length === 0 || cartArray === null) {
+                //window.location.reload()
+                //document.getElementsByTagName('h1').innerHTML = 'Votre panier est vide'
+                const panierVide = document.createElement("h2");
+                let elt = document.querySelector("cart");
+                elt.appenChild(panierVide);
+                panierVide.innerText = 'Votre panier est vide';
             }
+
             //sinon la quantitée de produit et le prix total est recalculé
             else {
                 totalPriceQuantityCart()
