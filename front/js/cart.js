@@ -291,7 +291,7 @@ function changeQuantityCart() {
 		
 		let textValidation = document.getElementById('cityErrorMsg')
 		let regexText = new RegExp(
-			"^([A-Z][a-z]+([ ]?[a-z]?['-]?[A-Zàâäéèêëïîôöùûüç][a-z]+)*)$",
+			"^[^.?!:;,/\\/_-]([. '-]?[a-zA-Zàâäéèêëïîôöùûüç])+[^.?!:;,/\\/_-]$",
 			'g'
 		)
 		//si le champs respecte les conditions de la regex, il est valide
