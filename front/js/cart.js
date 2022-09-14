@@ -10,12 +10,14 @@ let cartArray = []
 if (localStorage.getItem('canap'))
 	cartArray = JSON.parse(localStorage.getItem('canap'))
 
-    // ces deux lignes de code font exactement la même chose
+// ces deux lignes de code font exactement la même chose
 
+/*
 // ternary operator
 localStorage.getItem('canap')
 	? (cartArray = JSON.parse(localStorage.getItem('canap')))
 	: (cartArray = [])
+*/
 
 // console.log(cartArray)
 
@@ -86,7 +88,7 @@ function fetchData() {
 				deleteProductCart()
 			})
 			.then(() => {
-				OrderFinal()
+				orderFinal()
 			})
 	})
 }
@@ -183,128 +185,160 @@ function changeQuantityCart() {
 
 	for (let i = 0; i < changeQuantity.length; i++) {
 		const input = changeQuantity[i]
-
-		//on écoute la modification de la case
-		input.addEventListener('change', (e) => {
-			e.preventDefault()
-			//la valeur de la case est transmise a la quantité dans le tableau contenant les produits
-			cartArray[i].quantity = Number(e.target.value)
-			//puis enregistrée aussi dans le localStorage
-			localStorage.setItem('canap', JSON.stringify(cartArray))
-			//les quantités et les prix sont mis à jour
-			priceArray = []
-			panierContent.innerHTML = ''
-			fetchData()
-		})
+		
+			//on écoute la modification de la case
+			input.addEventListener('change', (e) => {
+				e.preventDefault()
+				//la valeur de la case est transmise a la quantité dans le tableau contenant les produits
+				cartArray[i].quantity = Number(e.target.value)
+				//puis enregistrée aussi dans le localStorage
+				localStorage.setItem('canap', JSON.stringify(cartArray))
+				//les quantités et les prix sont mis à jour
+				priceArray = []
+				panierContent.innerHTML = ''
+				fetchData()
+			})
 	}
 }
 
-//Fonction regroupant l'écoute des champs du formulaire, leur verification et l'utilisation des données pour créer
-//objet au clic du bouton commander
 
-function OrderFinal() {
-	//Formulaire, ecoute et validation de chaque champs
+//Formulaire, ecoute et validation de chaque champs
 
-	//function formFirstName() {
+//function formFirstName() {
+
+//Pointage et ecoute de l'input du champs Prénom
 	const inputFirstName = document.getElementById('firstName')
+	let firstValid = false //variable pour verifier si le champs est valide ou non et sera utilisée après
 
 	inputFirstName.addEventListener('change', () => {
+		
 		let textValidation = document.getElementById('firstNameErrorMsg')
 		let regexText = new RegExp(
-			"^[^.?!:;,/\\/_-]([. '-]?[a-zA-Zàâäéèêëïîôöùûüç])+[^.?!:;,/\\/_-]$",
+			"^([A-Z][a-z]+([ ]?[a-z]?['-]?[A-Zàâäéèêëïîôöùûüç][a-z]+)*)$",
 			'g'
 		)
-
+		//si le champs respecte les conditions de la regex, il est valide
 		if (inputFirstName.value.match(regexText)) {
-			textValidation.innerHTML = 'Prénom validé.'
-			textValidation.style.color = '#44ff4a'
-		} else {
+			textValidation.innerHTML = ' ';
+			firstValid = true
+	
+		} else {//sinon un message s'affiche en noir
 			textValidation.innerHTML = 'Veuillez entrer un prénom.'
-			textValidation.style.color = '#000000'
+			textValidation.style.color = '#000000';
+			firstValid = false
 		}
 	})
-	//}
+//}
 
-	//function formLastName() {
+//function formLastName() {
+
+//Pointage et ecoute de l'input du champs Nom
 	const inputLastName = document.getElementById('lastName')
+	let lastValid = false //variable pour verifier si le champs est valide ou non et sera utilisée après
 
 	inputLastName.addEventListener('change', () => {
+		
 		let textValidation = document.getElementById('lastNameErrorMsg')
 		let regexText = new RegExp(
-			"^[^.?!:;,/\\/_-]([. '-]?[a-zA-Zàâäéèêëïîôöùûüç])+[^.?!:;,/\\/_-]$",
+			"^([A-Z][a-z]+([ ]?[a-z]?['-]?[A-Zàâäéèêëïîôöùûüç][a-z]+)*)$",
 			'g'
 		)
-
+		//si le champs respecte les conditions de la regex, il est valide
 		if (inputLastName.value.match(regexText)) {
-			textValidation.innerHTML = 'Nom validé.'
-			textValidation.style.color = '#44ff4a'
-		} else {
+			textValidation.innerHTML = ' ';
+			lastValid = true
+			
+		} else {//sinon un message s'affiche en noir
 			textValidation.innerHTML = 'Veuillez entrer un nom de famille.'
-			textValidation.style.color = '#000000'
+			textValidation.style.color = '#000000';
+			lastValid = false
 		}
 	})
-	//}
+//}
 
-	//function formAddress() {
+//function formAddress() {
+
+//Pointage et ecoute de l'input du champs Addresse
 	const inputAddress = document.getElementById('address')
+	let addressValid = false //variable pour verifier si le champs est valide ou non et sera utilisée après
+
 	inputAddress.addEventListener('change', () => {
+		
 		let textValidation = document.getElementById('addressErrorMsg')
 		let regexText = new RegExp(
 			"^[^.?!:;,/\\/_-]([, .:;'-]?[0-9a-zA-Zàâäéèêëïîôöùûüç])+[^.?!:;,/\\/_-]$"
 		)
-
+		//si le champs respecte les conditions de la regex, il est valide
 		if (inputAddress.value.match(regexText)) {
-			textValidation.innerHTML = 'Adresse validée.'
-			textValidation.style.color = '#44ff4a'
-		} else {
+			textValidation.innerHTML = ' ';
+			addressValid = true
+			
+		} else {//sinon un message s'affiche en noir
 			textValidation.innerHTML = 'Veuillez entrer une adresse valide.'
-			textValidation.style.color = '#000000'
+			textValidation.style.color = '#000000';
+			addressValid = false
 		}
 	})
-	//}
+//}
 
-	//function formCity() {
+//function formCity() {
+
+//Pointage et ecoute de l'input du champs Ville
 	const inputCity = document.getElementById('city')
+	let cityValid = false //variable pour verifier si le champs est valide ou non et sera utilisée après
+
 	inputCity.addEventListener('change', () => {
+		
 		let textValidation = document.getElementById('cityErrorMsg')
 		let regexText = new RegExp(
-			"^[^.?!:;,/\\/_-]([. '-]?[a-zA-Zàâäéèêëïîôöùûüç])+[^.?!:;,/\\/_-]$",
+			"^([A-Z][a-z]+([ ]?[a-z]?['-]?[A-Zàâäéèêëïîôöùûüç][a-z]+)*)$",
 			'g'
 		)
-
+		//si le champs respecte les conditions de la regex, il est valide
 		if (inputCity.value.match(regexText)) {
-			textValidation.innerHTML = 'Ville validée.'
-			textValidation.style.color = '#44ff4a'
-		} else {
+			textValidation.innerHTML = ' ';
+			cityValid = true
+			
+		} else {//sinon un message s'affiche en noir
 			textValidation.innerHTML = 'Veuillez entrer une ville.'
-			textValidation.style.color = '#000000'
+			textValidation.style.color = '#000000';
+			cityValid = false
 		}
 	})
-	//}
+//}
 
-	//function formEmail() {
+//function formEmail() {
+
+//Pointage et ecoute de l'input du champs Email
 	const inputEmail = document.getElementById('email')
+	let emailValid = false //variable pour verifier si le champs est valide ou non et sera utilisée après
+
 	inputEmail.addEventListener('change', () => {
+		
 		let textValidation = document.getElementById('emailErrorMsg')
 		let regexText = new RegExp(
 			"([!#-'*+/-9=?A-Z^-~-]+(.[!#-'*+/-9=?A-Z^-~-]+)*|\"([]!#-[^-~ \t]|(\\[\t -~]))+\")@([!#-'*+/-9=?A-Z^-~-]+(.[!#-'*+/-9=?A-Z^-~-]+)*|[[\t -Z^-~]*])"
 		)
-
+		//si le champs respecte les conditions de la regex, il est valide
 		if (inputEmail.value.match(regexText)) {
-			textValidation.innerHTML = 'Email validée.'
-			textValidation.style.color = '#44ff4a'
-		} else {
+			textValidation.innerHTML = ' ';
+			emailValid = true
+			
+		} else {//sinon un message s'affiche en noir
 			textValidation.innerHTML = 'Veuillez entrer une adresse mail valide.'
-			textValidation.style.color = '#000000'
+			textValidation.style.color = '#000000';
+			emailValid = false
 		}
 	})
-	//}
+//}
 
-	//formFirstName();
-	//formLastName();
-	//formAddress();
-	//formCity();
-	//formEmail();
+//formFirstName();
+//formLastName();
+//formAddress();
+//formCity();
+//formEmail();
+
+function orderFinal() {
 
 	//Ecoute du bouton commander et actions si oui ou non le formulaire est bien rempli
 
@@ -316,7 +350,7 @@ function OrderFinal() {
 		if (cartArray === null || cartArray.length === 0) {
 			alert('Votre panier est vide')
 		} else {
-			//si tous les champs ne sont pas remplis, on affiche ce message
+			//si un des champs ne contient rien on affiche ce message
 			if (
 				!inputFirstName.value ||
 				!inputLastName.value ||
@@ -325,8 +359,15 @@ function OrderFinal() {
 				!inputEmail.value
 			) {
 				alert('Veuillez renseigner tous les champs du formulaire')
-			} else {
-				//si tous les champs sont rempli on crée un objet contenant les infos client et produits du panier
+			} 
+			//si un des champs n'est pas rempli de manière correct selon les regex on affiche ce message
+			else if (firstValid === false || lastValid === false ||
+					 addressValid === false || cityValid === false ||
+					 emailValid === false) {
+						alert("Veuillez remplir correctement chaque champs du formulaire")
+			}
+			else {
+				//si tous les champs sont remplis on crée un objet contenant les infos client et produits du panier
 				let orderProduct = []
 				for (let i = 0; i < cartArray.length; i++) {
 					orderProduct.push(cartArray[i].canapeId)
