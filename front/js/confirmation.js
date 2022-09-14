@@ -8,4 +8,4 @@ const orderNumber = document.getElementById("orderId");
 orderNumber.innerText = OrderId
 
 //on vide le local storage
-localStorage.clear()
+localStorage.clear();
