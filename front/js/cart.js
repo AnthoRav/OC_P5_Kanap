@@ -158,21 +158,15 @@ function deleteProductCart() {
 	})
 }
 
-checkPanie()
+checkPanier()
 //si le panier est vide après la suppression de produit, la page se recharge pour se mettre à jour avec ce message
-function checkPanie() {
+function checkPanier() {
 	if (cartArray.length === 0 || cartArray === null) {
 		//window.location.reload()
 		document.querySelector('h1').innerText = 'Votre panier est vide'
-		//const panierVide = document.createElement('h2')
-		//panierVide.innerText = 'Votre panier est vide'
-		//console.log(panierVide)
-		//let elt = document.querySelector('.cart')
-		//elt.appenChild(panierVide)
+		
 	}
-
-	//sinon la quantitée de produit et le prix total est recalculé
-	else {
+	else {//sinon la quantitée de produit et le prix total est recalculé
 		totalPriceQuantityCart()
 	}
 }
@@ -191,20 +185,24 @@ function changeQuantityCart() {
 				e.preventDefault()
 				//la valeur de la case est transmise a la quantité dans le tableau contenant les produits
 				cartArray[i].quantity = Number(e.target.value)
-				//puis enregistrée aussi dans le localStorage
-				localStorage.setItem('canap', JSON.stringify(cartArray))
-				//les quantités et les prix sont mis à jour
-				priceArray = []
-				panierContent.innerHTML = ''
-				fetchData()
+				//on verifie si la valeur entrée est toujouts comprsi entre 1 et 100
+				if (Number(e.target.value) > 0 && Number(e.target.value) <= 100) {
+				//Si oui, la valeur enregistrée aussi dans le localStorage
+					localStorage.setItem('canap', JSON.stringify(cartArray))
+					//les quantités et les prix sont mis à jour
+					priceArray = []
+					panierContent.innerHTML = ''
+					fetchData()
+				}
+				 else {//Si non, ce message s'affiche et ce n'est pas enregistrer
+					alert("La quantité d'un produit ne peut excéder 100 par commande")
+				 }
 			})
 	}
 }
 
 
 //Formulaire, ecoute et validation de chaque champs
-
-//function formFirstName() {
 
 //Pointage et ecoute de l'input du champs Prénom
 	const inputFirstName = document.getElementById('firstName')
@@ -228,9 +226,6 @@ function changeQuantityCart() {
 			firstValid = false
 		}
 	})
-//}
-
-//function formLastName() {
 
 //Pointage et ecoute de l'input du champs Nom
 	const inputLastName = document.getElementById('lastName')
@@ -254,9 +249,6 @@ function changeQuantityCart() {
 			lastValid = false
 		}
 	})
-//}
-
-//function formAddress() {
 
 //Pointage et ecoute de l'input du champs Addresse
 	const inputAddress = document.getElementById('address')
@@ -279,9 +271,6 @@ function changeQuantityCart() {
 			addressValid = false
 		}
 	})
-//}
-
-//function formCity() {
 
 //Pointage et ecoute de l'input du champs Ville
 	const inputCity = document.getElementById('city')
@@ -305,9 +294,6 @@ function changeQuantityCart() {
 			cityValid = false
 		}
 	})
-//}
-
-//function formEmail() {
 
 //Pointage et ecoute de l'input du champs Email
 	const inputEmail = document.getElementById('email')
@@ -330,13 +316,8 @@ function changeQuantityCart() {
 			emailValid = false
 		}
 	})
-//}
 
-//formFirstName();
-//formLastName();
-//formAddress();
-//formCity();
-//formEmail();
+//Fonction pour creer er envoyer les données de la commande à l'API	
 
 function orderFinal() {
 
@@ -349,7 +330,8 @@ function orderFinal() {
 		//si le panier est vide on affiche ce message
 		if (cartArray === null || cartArray.length === 0) {
 			alert('Votre panier est vide')
-		} else {
+		}
+		 else {
 			//si un des champs ne contient rien on affiche ce message
 			if (
 				!inputFirstName.value ||
