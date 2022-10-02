@@ -212,7 +212,7 @@ function changeQuantityCart() {
 		
 		let textValidation = document.getElementById('firstNameErrorMsg')
 		let regexText = new RegExp(
-			"^([A-Z][a-z]+([ ]?[a-z]?['-]?[A-Zàâäéèêëïîôöùûüç][a-z]+)*)$",
+			"^([A-Z][a-z]+([ ]?[a-z]?['-]?[A-Zàâäéèêëïîôöùûüç]+)*)$",
 			'g'
 		)
 		//si le champs respecte les conditions de la regex, il est valide
@@ -235,7 +235,7 @@ function changeQuantityCart() {
 		
 		let textValidation = document.getElementById('lastNameErrorMsg')
 		let regexText = new RegExp(
-			"^([A-Z][a-z]+([ ]?[a-z]?['-]?[A-Zàâäéèêëïîôöùûüç][a-z]+)*)$",
+			"^([A-Z][a-z]+([ ]?[a-z]?['-]?[A-Zàâäéèêëïîôöùûüç]+)*)$",
 			'g'
 		)
 		//si le champs respecte les conditions de la regex, il est valide
@@ -385,7 +385,8 @@ function orderFinal() {
 						res
 							.json()
 							.then((data) => {
-								console.log(data)
+								//console.log(data)
+								//on redirige vers la page de confirmation de commande avec l'order Id dans l'url
 								document.location.href = `confirmation.html?orderId=${data.orderId}`
 							})
 							.catch((err) => {
